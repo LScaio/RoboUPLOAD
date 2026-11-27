@@ -1,50 +1,64 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-
-
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.simulation.ArenaSimulada;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveCommands;
+import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.DriveIO;
+import frc.robot.subsystems.drive.DriveIOSim;
+import frc.robot.subsystems.drive.DriveIOSparkMax;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * Monta o robo: escolhe as implementacoes de hardware e liga os controles.
+ *
+ * Este e o unico lugar do projeto que decide se a tracao vai falar com SPARK
+ * MAX ou com a simulacao. Nenhum subsistema participa dessa escolha.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  
+  private final Drive drive;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final CommandXboxController driverController = new CommandXboxController(0);
+
+  private final ArenaSimulada arenaSimulada =
+    Constants.getMode() == Constants.Mode.SIM ? new ArenaSimulada() : null;
+
   public RobotContainer() {
-    // Configure the trigger bindings
+    DriveIO driveIO =
+        switch (Constants.getMode()) {
+          case REAL -> new DriveIOSparkMax();
+          case SIM -> new DriveIOSim();
+          // Em REPLAY ninguem conversa com hardware: as entradas vem do log.
+          case REPLAY -> new DriveIO() {};
+        };
+
+    drive = new Drive(driveIO);
+
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    
+    // Comando padrao: enquanto nada mais pedir a tracao, ela obedece ao joystick.
+    drive.setDefaultCommand(
+    drive.arcadeDriveCommand(
+        () -> MathUtil.applyDeadband(-driverController.getLeftY(), DriveConstants.JOYSTICK_DEADBAND),
+        () -> MathUtil.applyDeadband(-driverController.getRightX(), DriveConstants.JOYSTICK_DEADBAND)));
+    driverController.a().onTrue(DriveCommands.nudgeForward(drive));
+    driverController.b().onTrue(drive.stopCommand());
   }
 
-  
-  
+  public void simulationPeriodic() {
+  if (arenaSimulada != null) {
+    arenaSimulada.atualizar();
+  }
+}
+
+  public Command getAutonomousCommand() {
+    // Rotina minima de exemplo: anda para a frente e para.
+    return Commands.sequence(DriveCommands.driveDistance(drive, 1.5)).withName("AutoSimples");
+  }
 }

@@ -1,34 +1,47 @@
-
-
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.config.RobotType;
 
+/**
+ * Constantes globais do projeto.
+ *
+ * Regra do padrao: aqui entra SOMENTE o que vale para o robo inteiro.
+ * Numeros de um mecanismo moram no XxxConstants da pasta daquele mecanismo.
+ * Se este arquivo passar de umas 40 linhas uteis, algo esta no lugar errado.
+ */
 public final class Constants {
-  
 
-  public static class ElevatorConstants {
-    public static final int kLeftMotor = 1; //Alterar quando a eletrica confirmar o ID
-    public static final int kRightMotor = 2; //Alterar quando a eletrica confirmar o ID
+  private Constants() {}
 
-    public static final double kReduction = 16.0;
+  /** Robo fisico desta temporada. Um chassi novo entra como novo valor no enum. */
+  public static final RobotType ROBOT_TYPE = RobotType.COMPETITION;
 
-    public static final double kSprocket = 22.0;
-    public static final double kPitchChain = 0.009525;
+  /** Periodo do loop principal da WPILib, em segundos. */
+  public static final double LOOP_PERIOD_SECONDS = 0.02;
 
-    public static final double kStages = 2.0;
+  public static final int TEAM_NUMBER = 10466;
 
-    public static final double kOffset = 0.157;
-    public static final double kMaximumHeight = 1.12;
+  /**
+   * Modo em que o codigo esta rodando.
+   *
+   * REAL   - no robo.
+   * SIM    - no computador, com os mecanismos simulados.
+   * REPLAY - reprocessando um log gravado, para analisar a partida depois.
+   */
+  public enum Mode {
+    REAL,
+    SIM,
+    REPLAY
+  }
 
-    public static final double kTolerance = 0.04;
-    
-    public static final double kTableTarget = 0.79;
-    public static final double kRetreatTableTarget = 1.12;
+  /** Trocar para Mode.REPLAY quando for reprocessar um log no computador. */
+  private static final Mode SIMULATION_MODE = Mode.SIM;
 
-    public static final double kDockTarget = 0.34;
-    public static final double kRetreatDockTarget = 0.70;
-
-    public static final double kMetersAroundMotor = kSprocket * kPitchChain / kReduction * kStages;
-
+  public static Mode getMode() {
+    if (RobotBase.isReal()) {
+      return Mode.REAL;
+    }
+    return SIMULATION_MODE;
   }
 }
