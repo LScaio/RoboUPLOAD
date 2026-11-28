@@ -49,6 +49,24 @@ public class DriveIOSparkMax implements DriveIO{
         Leftfront.configure(LeftConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    @Override
+    public void updateInputs(DriveIOInputs inputs) {
+        inputs.positionLeft = encoderLeftFront.getPosition();
+        inputs.positonRight = encoderRightFront.getPosition();
+
+        inputs.velocityLeft = encoderLeftFront.getVelocity();
+        inputs.velocityRight = encoderRightFront.getVelocity();
+
+        inputs.voltsLeft = Leftfront.getAppliedOutput() * Leftfront.getBusVoltage();
+        inputs.voltsRight = Leftfront.getAppliedOutput() * Leftfront.getBusVoltage();
+    }
+
+    @Override 
+    public void setVolts(double voltsLeft, double voltsRight) {
+        Leftfront.setVoltage(voltsLeft);
+        Rightfront.setVoltage(voltsRight);
+    }
+
 }
 
 

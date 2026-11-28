@@ -3,8 +3,6 @@ package frc.robot.subystems.drive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,11 +21,10 @@ public class Drive extends SubsystemBase{
     private final DriveIOInputs inputs = new DriveIO.DriveIOInputs();
     private final GyroIOInputs gyroinputs = new GyroIO.GyroIOInputs();
 
-    private final StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("Odometria/Pose", Pose2d.struct).publish();
     private final DifferentialDriveOdometry odometria;
     private final Field2d campo = new Field2d();
 
-    private double potenciaMaxima = DriveConstants.VELOCIDADE_TURBO;
+    private double potenciaMaxima = DriveConstants.VELOCIDADE_NORMAL;
 
     public Drive(DriveIO drive, GyroIO gyro) {
         this.drive = drive;
@@ -46,7 +43,6 @@ public class Drive extends SubsystemBase{
         gyro.updateInputs(gyroinputs);
 
         odometria.update(getAngulo(), inputs.positionLeft, inputs.positonRight);
-        posePublisher.set(getPose());
         campo.setRobotPose(getPose());
 
         SmartDashboard.putNumber("encoder direito", inputs.positonRight);

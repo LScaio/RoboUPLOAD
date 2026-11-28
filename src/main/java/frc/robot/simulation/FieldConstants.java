@@ -16,7 +16,7 @@ public final class FieldConstants {
   public static final double FIELD_LENGTH_METERS = 7.0;
   public static final double FIELD_WIDTH_METERS = 7.0;
 
-  public static final Pose2d ROBOT_START_POSE = new Pose2d(1.5, 3.5, new Rotation2d());
+  public static final Pose2d ROBOT_START_POSE = new Pose2d(-3.5, -3.0, new Rotation2d());
 
   // Pontos de interesse do jogo entram aqui, sempre em metros e radianos.
 }

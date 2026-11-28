@@ -1,8 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -35,7 +33,7 @@ public class RobotContainer {
   private void configureBindings() {
     tracao.setDefaultCommand(tracao.run(() -> {
           double speed = MathUtil.applyDeadband(-controle.getLeftY() * 0.8, 0.1);
-          double rotacao = MathUtil.applyDeadband(-controle.getRightX() * 0.6, 0.1);
+          double rotacao = MathUtil.applyDeadband(-controle.getRightX() * 0.8, 0.1);
           tracao.arcade(speed, rotacao);
         }));
     controle.a().toggleOnTrue(tracao.commandTurbo());
