@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.simulation.FieldConstants;
 import frc.robot.subystems.drive.DriveIO.DriveIOInputs;
 import frc.robot.subystems.drive.GyroIO.GyroIOInputs;
 
@@ -24,7 +25,7 @@ public class Drive extends SubsystemBase{
 
     private final StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("Odometria/Pose", Pose2d.struct).publish();
     private final DifferentialDriveOdometry odometria;
-    private Field2d campo;
+    private final Field2d campo = new Field2d();
 
     private double potenciaMaxima = DriveConstants.VELOCIDADE_TURBO;
 
@@ -35,7 +36,7 @@ public class Drive extends SubsystemBase{
         drive.updateInputs(inputs);
         gyro.updateInputs(gyroinputs);
         
-        odometria = new DifferentialDriveOdometry(getAngulo(), inputs.positionLeft, inputs.positonRight);
+        odometria = new DifferentialDriveOdometry(getAngulo(), inputs.positionLeft, inputs.positonRight,FieldConstants.ROBOT_START_POSE);
         SmartDashboard.putData("Campo", campo);
     }
 
@@ -44,7 +45,7 @@ public class Drive extends SubsystemBase{
         drive.updateInputs(inputs);
         gyro.updateInputs(gyroinputs);
 
-        odometria.update(getAngulo(), inputs.positionLeft, inputs.positionLeft);
+        odometria.update(getAngulo(), inputs.positionLeft, inputs.positonRight);
         posePublisher.set(getPose());
         campo.setRobotPose(getPose());
 

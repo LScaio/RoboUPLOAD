@@ -38,4 +38,12 @@ public class DriveConstants {
     public final static double MOUNTPOSE_YAW = -90.61016845703125;
     public final static double MOUNTPOSE_ROLL = -0.3616531789302826;
     public final static double MOUNTPOSEPITCH = -0.9369150996208191;
+
+    //--------------------------------------------------------------------------------
+
+    public final static double MASS_ROBOt_KG = 36.0;
+    public final static double REDUCTION = 10.71;
+    public final static double WHEEL_RADIUS_METERS = 0.1524 / 2.0;
+    public final static double TRACK_WIDTH_METERS = 0.60;
+    public final static double MOI_KG_M2 = MASS_ROBOt_KG * (0.70 * 0.70 + 0.60 * 0.60) / 12.0;
 }

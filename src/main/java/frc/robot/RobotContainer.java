@@ -13,7 +13,9 @@ import frc.robot.commands.drive.GirarAte;
 import frc.robot.subystems.drive.Drive;
 import frc.robot.subystems.drive.DriveIOSparkMax;
 import frc.robot.subystems.drive.GyroIOPigeon2;
-
+import frc.robot.subystems.drive.DriveIOSim;
+import frc.robot.subystems.drive.GyroIOSim;
+import frc.robot.simulation.FieldConstants;
 
 public class RobotContainer {
   
@@ -23,10 +25,10 @@ public class RobotContainer {
   public RobotContainer() {
     if (RobotBase.isReal()) {
       tracao = new Drive(new DriveIOSparkMax(), new GyroIOPigeon2());
-    } // else {
-      //DriveIOSim driveSim = new DriveIOSim();
-      //tracao = new Drive(driveSim, new GyroIOSim(driveSim))
-    //}
+    }  else {
+      DriveIOSim driveSim = new DriveIOSim();
+      tracao = new Drive(driveSim, new GyroIOSim(driveSim));
+    }
     configureBindings();
   }
 
@@ -41,8 +43,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.sequence(Commands.runOnce(() -> tracao.resetarPose(new Pose2d(3.5,3,Rotation2d.kZero))),
-      new GirarAte(tracao, 90).withTimeout(5),
-      new AndarReto(tracao, 1));
-  }
+    return Commands.sequence(
+        Commands.runOnce(() -> tracao.resetarPose(FieldConstants.ROBOT_START_POSE)),
+        new GirarAte(tracao, 90).withTimeout(5),
+        new AndarReto(tracao, 1)
+    );
+}
 }
