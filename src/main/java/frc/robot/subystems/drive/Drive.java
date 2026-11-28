@@ -26,7 +26,7 @@ public class Drive extends SubsystemBase{
     private final DifferentialDriveOdometry odometria;
     private Field2d campo = new Field2d();
 
-    private double potenciaMaxima = DriveConstants.VELOCIDADE_TURBO;
+    private double potenciaMaxima = DriveConstants.VELOCIDADE_NORMAL;
 
     public Drive(DriveIO drive, GyroIO gyro) {
         this.drive = drive;
