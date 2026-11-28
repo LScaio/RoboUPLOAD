@@ -3,14 +3,13 @@ package frc.robot.subystems.drive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.simulation.FieldConstants;
 import frc.robot.subystems.drive.DriveIO.DriveIOInputs;
 import frc.robot.subystems.drive.GyroIO.GyroIOInputs;
 
@@ -22,9 +21,8 @@ public class Drive extends SubsystemBase{
     private final DriveIOInputs inputs = new DriveIO.DriveIOInputs();
     private final GyroIOInputs gyroinputs = new GyroIO.GyroIOInputs();
 
-    private final StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("Odometria/Pose", Pose2d.struct).publish();
     private final DifferentialDriveOdometry odometria;
-    private Field2d campo = new Field2d();
+    private final Field2d campo = new Field2d();
 
     private double potenciaMaxima = DriveConstants.VELOCIDADE_NORMAL;
 
@@ -35,7 +33,7 @@ public class Drive extends SubsystemBase{
         drive.updateInputs(inputs);
         gyro.updateInputs(gyroinputs);
         
-        odometria = new DifferentialDriveOdometry(getAngulo(), inputs.positionLeft, inputs.positonRight);
+        odometria = new DifferentialDriveOdometry(getAngulo(), inputs.positionLeft, inputs.positonRight,FieldConstants.ROBOT_START_POSE);
         SmartDashboard.putData("Campo", campo);
     }
 
@@ -45,7 +43,6 @@ public class Drive extends SubsystemBase{
         gyro.updateInputs(gyroinputs);
 
         odometria.update(getAngulo(), inputs.positionLeft, inputs.positonRight);
-        posePublisher.set(getPose());
         campo.setRobotPose(getPose());
 
         SmartDashboard.putNumber("encoder direito", inputs.positonRight);

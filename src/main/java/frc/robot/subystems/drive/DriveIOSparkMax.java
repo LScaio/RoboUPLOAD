@@ -61,7 +61,7 @@ public class DriveIOSparkMax implements DriveIO{
         inputs.voltsRight = Leftfront.getAppliedOutput() * Leftfront.getBusVoltage();
     }
 
-    @Override
+    @Override 
     public void setVolts(double voltsLeft, double voltsRight) {
         Leftfront.setVoltage(voltsLeft);
         Rightfront.setVoltage(voltsRight);
